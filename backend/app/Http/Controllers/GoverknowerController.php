@@ -61,27 +61,26 @@ class GoverknowerController extends Controller
             Log::info('Generating embedding for query:', ['query' => $userQuery]);
             $userQueryEmbedding = $this->embeddingService->generateEmbedding($userQuery);
             
-            if (!$userQueryEmbedding) {
-                Log::error('Failed to generate embedding for user query');
-                $vectorDBResponse = $this->getMockData();
-            }
-
-            // --- STEP 2: Query Pinecone with the embedding ---
-            Log::info('Querying Pinecone with embedding');
+            if ($userQueryEmbedding) {
             
-            try {
-                $pineconeMatches = $this->pineconeService->querySimilar($userQueryEmbedding, 3);
-                
-                if ($pineconeMatches && !empty($pineconeMatches)) {
-                    // Extract text from Pinecone matches
-                    $vectorDBResponse = $this->pineconeService->getFormattedResults($pineconeMatches);
-                    Log::info('Retrieved data from Pinecone:', ['matches_count' => count($pineconeMatches)]);
-                } else {
-                    Log::warning('No results found in Pinecone, using fallback data');
+                try {
+                    $pineconeMatches = $this->pineconeService->querySimilar($userQueryEmbedding, 3);
+                    
+                    if ($pineconeMatches && !empty($pineconeMatches)) {
+                        // Extract text from Pinecone matches
+                        $vectorDBResponse = $this->pineconeService->getFormattedResults($pineconeMatches);
+                        Log::info('Retrieved data from Pinecone:', ['matches_count' => count($pineconeMatches)]);
+                    } else {
+                        Log::warning('No results found in Pinecone, using fallback data');
+                        $vectorDBResponse = $this->getMockData();
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Pinecone query failed, using fallback data:', ['error' => $e->getMessage()]);
                     $vectorDBResponse = $this->getMockData();
                 }
-            } catch (\Exception $e) {
-                Log::error('Pinecone query failed, using fallback data:', ['error' => $e->getMessage()]);
+
+            } else {
+                Log::error('Failed to generate embedding for user query');
                 $vectorDBResponse = $this->getMockData();
             }
 
