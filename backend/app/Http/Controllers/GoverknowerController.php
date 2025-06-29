@@ -150,9 +150,71 @@ class GoverknowerController extends Controller
     private function getMockData(): string
     {
         $vectorDBResults = [
-            "Senator Jane Doe (D-CA) voted YES on the 'Clean Air Act of 2024' (Bill H.R. 1234).",
-            "Senator John Smith (R-TX) was ABSENT for the vote on Bill H.R. 1234.",
-            "The 'Clean Air Act of 2024' aims to reduce carbon emissions by 20% over 5 years."
+            // 2024-2025 Bills
+            "The 'Infrastructure Investment and Jobs Act 2024' (H.R. 3684) was passed with bipartisan support, allocating $1.2 trillion for roads, bridges, and broadband infrastructure.",
+            "The 'American Rescue Plan Act 2024' (H.R. 1319) provided $1.9 trillion in COVID-19 relief funding, including stimulus checks and vaccine distribution.",
+            "The 'Inflation Reduction Act 2024' (H.R. 5376) aims to reduce prescription drug costs and invest $369 billion in climate change initiatives.",
+            "The 'Bipartisan Safer Communities Act 2024' (S. 2938) enhances background checks and provides funding for mental health services.",
+            "The 'CHIPS and Science Act 2024' (H.R. 4346) provides $280 billion for semiconductor manufacturing and scientific research.",
+            "The 'Respect for Marriage Act 2024' (H.R. 8404) codifies same-sex and interracial marriage protections.",
+            "The 'National Defense Authorization Act 2024' (H.R. 7776) authorizes $858 billion for defense spending and military pay raises.",
+            "The 'Omnibus Spending Bill 2024' (H.R. 2617) provides $1.7 trillion in government funding through September 2024.",
+            
+            // Senator Voting Records
+            "Senator Chuck Schumer (D-NY) voted YES on the Infrastructure Investment and Jobs Act 2024, YES on the Inflation Reduction Act 2024, and YES on the CHIPS and Science Act 2024.",
+            "Senator Mitch McConnell (R-KY) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, but YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Bernie Sanders (I-VT) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Ted Cruz (R-TX) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, and NO on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Elizabeth Warren (D-MA) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Marco Rubio (R-FL) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, but YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Amy Klobuchar (D-MN) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Josh Hawley (R-MO) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, and NO on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Cory Booker (D-NJ) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Tom Cotton (R-AR) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, and NO on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Kirsten Gillibrand (D-NY) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Rand Paul (R-KY) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, and NO on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Tammy Duckworth (D-IL) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Mike Lee (R-UT) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, and NO on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Mazie Hirono (D-HI) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Ron Johnson (R-WI) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, and NO on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Catherine Cortez Masto (D-NV) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Rick Scott (R-FL) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, and NO on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Mark Kelly (D-AZ) voted YES on the American Rescue Plan Act 2024, YES on the Inflation Reduction Act 2024, and YES on the Infrastructure Investment and Jobs Act 2024.",
+            "Senator Marsha Blackburn (R-TN) voted NO on the American Rescue Plan Act 2024, NO on the Inflation Reduction Act 2024, and NO on the Infrastructure Investment and Jobs Act 2024.",
+            
+            // Additional 2024-2025 Bills
+            "The 'Student Loan Debt Relief Act 2024' (H.R. 6951) proposes to cancel up to $20,000 in federal student loan debt for eligible borrowers.",
+            "The 'Gun Safety Reform Act 2024' (S. 2938) expands background checks and implements a 21-day waiting period for firearm purchases.",
+            "The 'Healthcare Affordability Act 2024' (H.R. 5376) caps insulin costs at $35 per month and allows Medicare to negotiate drug prices.",
+            "The 'Climate Action Now Act 2024' (H.R. 9) requires the United States to remain in the Paris Climate Agreement and develop a plan to meet emissions targets.",
+            "The 'Voting Rights Advancement Act 2024' (H.R. 4) restores and strengthens the Voting Rights Act of 1965.",
+            "The 'Minimum Wage Increase Act 2024' (H.R. 603) gradually raises the federal minimum wage to $15 per hour by 2025.",
+            "The 'Family and Medical Leave Expansion Act 2024' (H.R. 804) provides 12 weeks of paid family and medical leave for all workers.",
+            "The 'Tax Fairness for Working Families Act 2024' (H.R. 1757) increases the Child Tax Credit and makes it permanently refundable.",
+            
+            // More Senator Voting Records for New Bills
+            "Senator Chuck Schumer (D-NY) voted YES on the Student Loan Debt Relief Act 2024, YES on the Gun Safety Reform Act 2024, and YES on the Healthcare Affordability Act 2024.",
+            "Senator Mitch McConnell (R-KY) voted NO on the Student Loan Debt Relief Act 2024, NO on the Gun Safety Reform Act 2024, and NO on the Healthcare Affordability Act 2024.",
+            "Senator Bernie Sanders (I-VT) voted YES on the Student Loan Debt Relief Act 2024, YES on the Gun Safety Reform Act 2024, and YES on the Healthcare Affordability Act 2024.",
+            "Senator Ted Cruz (R-TX) voted NO on the Student Loan Debt Relief Act 2024, NO on the Gun Safety Reform Act 2024, and NO on the Healthcare Affordability Act 2024.",
+            "Senator Elizabeth Warren (D-MA) voted YES on the Student Loan Debt Relief Act 2024, YES on the Gun Safety Reform Act 2024, and YES on the Healthcare Affordability Act 2024.",
+            "Senator Marco Rubio (R-FL) voted NO on the Student Loan Debt Relief Act 2024, NO on the Gun Safety Reform Act 2024, and NO on the Healthcare Affordability Act 2024.",
+            
+            // Committee Information
+            "Senator Chuck Schumer (D-NY) serves as Senate Majority Leader and is a member of the Senate Finance Committee and Senate Banking Committee.",
+            "Senator Mitch McConnell (R-KY) serves as Senate Minority Leader and is a member of the Senate Rules Committee and Senate Appropriations Committee.",
+            "Senator Bernie Sanders (I-VT) chairs the Senate Budget Committee and is a member of the Senate Health, Education, Labor, and Pensions Committee.",
+            "Senator Ted Cruz (R-TX) serves on the Senate Judiciary Committee, Senate Commerce Committee, and Senate Foreign Relations Committee.",
+            "Senator Elizabeth Warren (D-MA) serves on the Senate Banking Committee, Senate Armed Services Committee, and Senate Special Committee on Aging.",
+            "Senator Marco Rubio (R-FL) serves on the Senate Foreign Relations Committee, Senate Intelligence Committee, and Senate Small Business Committee.",
+            
+            // Bill Sponsorship Information
+            "Senator Bernie Sanders (I-VT) sponsored the 'Medicare for All Act 2024' (S. 1129) which would establish a single-payer healthcare system.",
+            "Senator Elizabeth Warren (D-MA) sponsored the 'Student Loan Debt Relief Act 2024' (H.R. 6951) and the 'Wealth Tax Act 2024' (S. 510).",
+            "Senator Ted Cruz (R-TX) sponsored the 'Border Security and Immigration Reform Act 2024' (S. 2193) and the 'Second Amendment Protection Act 2024' (S. 1234).",
+            "Senator Marco Rubio (R-FL) sponsored the 'Pro-Life Protection Act 2024' (S. 3278) and the 'Small Business Tax Relief Act 2024' (S. 2156).",
+            "Senator Amy Klobuchar (D-MN) sponsored the 'Antitrust Enforcement Act 2024' (S. 225) and the 'Election Security Act 2024' (S. 1543).",
+            "Senator Josh Hawley (R-MO) sponsored the 'Big Tech Accountability Act 2024' (S. 789) and the 'American Workers Protection Act 2024' (S. 2341)."
         ];
         return implode("\n", $vectorDBResults);
     }

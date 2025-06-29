@@ -8,4 +8,48 @@
             <message-box></message-box>
         </footer>
     </div>
+    
+    <!-- Floating Help Button -->
+    <div class="fixed bottom-20 right-4 z-50">
+        <button 
+            class="btn btn-circle btn-primary shadow-lg"
+            (click)="showHelp = !showHelp"
+            title="Get help with questions"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Help Popup -->
+    @if (showHelp) {
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-40" (click)="showHelp = false"></div>
+        <div class="fixed bottom-32 right-4 w-80 bg-base-100 rounded-lg shadow-xl z-50 p-4 border">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="font-semibold">💡 Quick Help</h3>
+                <button class="btn btn-sm btn-ghost" (click)="showHelp = false">✕</button>
+            </div>
+            <div class="space-y-3 text-sm">
+                <div>
+                    <strong>Try asking about:</strong>
+                    <ul class="mt-1 space-y-1 text-xs">
+                        <li>• "What is the Infrastructure Bill?"</li>
+                        <li>• "How did Bernie Sanders vote?"</li>
+                        <li>• "Which committees does Warren serve on?"</li>
+                        <li>• "Who voted for the Inflation Reduction Act?"</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Available data:</strong>
+                    <ul class="mt-1 space-y-1 text-xs">
+                        <li>• 2024-2025 Bills & Legislation</li>
+                        <li>• Senate Voting Records</li>
+                        <li>• Committee Information</li>
+                        <li>• Bill Sponsorship</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    }
 </div>

@@ -16,4 +16,12 @@ export class ConversationBoxComponent {
             this.messages = newMsg;
         });
     }
+
+    /**
+     * Handle when user clicks on an example question
+     * @param question The example question to ask
+     */
+    askExample(question: string): void {
+        this.controller.sendMessage(question);
+    }
 }

@@ -23,4 +23,5 @@ import { SideDrawerComponent } from './core/components/sidedrawer.component';
 })
 export class AppComponent {
     title = 'Goverknower - Ask About Your Politician';
+    showHelp = false;
 }

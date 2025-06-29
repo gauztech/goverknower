@@ -1,15 +1,20 @@
 <div id="message-box" class="flex items-center space-x-4">
-    <textarea
-        #message
-        placeholder="Ask your question..."
-        class="flex-1 resize-none textarea"
-        rows="1"
-        (keydown.enter)="
-            $event.preventDefault();
-            sendMessage(message.value);
-            message.value = ''
-        "
-    ></textarea>
+    <div class="flex-1 relative">
+        <textarea
+            #message
+            placeholder="Ask about bills, senators, voting records, committees... (e.g., 'What is the Infrastructure Bill?' or 'How did Bernie Sanders vote?')"
+            class="w-full resize-none textarea pr-20"
+            rows="1"
+            (keydown.enter)="
+                $event.preventDefault();
+                sendMessage(message.value);
+                message.value = ''
+            "
+        ></textarea>
+        <div class="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-400">
+            Press Enter to send
+        </div>
+    </div>
     <button
         class="btn btn-primary max-h-full"
         onclick="sendMessage(message.value);message.value=''"
