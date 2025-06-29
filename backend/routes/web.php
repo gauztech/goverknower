@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoverknowerController;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/app');
 });
 
 Route::get('/ask', [GoverknowerController::class, 'ask']);
