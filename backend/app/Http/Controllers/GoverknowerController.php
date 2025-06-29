@@ -70,21 +70,21 @@ class GoverknowerController extends Controller
 
             // --- STEP 2: Query Pinecone with the embedding ---
             Log::info('Querying Pinecone with embedding');
-            $pineconeMatches = $this->pineconeService->querySimilar($userQueryEmbedding, 3);
             
-            if (!$pineconeMatches) {
-                Log::warning('No results found in Pinecone, using fallback data');
-                // Fallback to mock data if Pinecone query fails
-                $vectorDBResults = [
-                    "Senator Jane Doe (D-CA) voted YES on the 'Clean Air Act of 2024' (Bill H.R. 1234).",
-                    "Senator John Smith (R-TX) was ABSENT for the vote on Bill H.R. 1234.",
-                    "The 'Clean Air Act of 2024' aims to reduce carbon emissions by 20% over 5 years."
-                ];
-                $vectorDBResponse = implode("\n", $vectorDBResults);
-            } else {
-                // Extract text from Pinecone matches
-                $vectorDBResponse = $this->pineconeService->getFormattedResults($pineconeMatches);
-                Log::info('Retrieved data from Pinecone:', ['matches_count' => count($pineconeMatches)]);
+            try {
+                $pineconeMatches = $this->pineconeService->querySimilar($userQueryEmbedding, 3);
+                
+                if ($pineconeMatches && !empty($pineconeMatches)) {
+                    // Extract text from Pinecone matches
+                    $vectorDBResponse = $this->pineconeService->getFormattedResults($pineconeMatches);
+                    Log::info('Retrieved data from Pinecone:', ['matches_count' => count($pineconeMatches)]);
+                } else {
+                    Log::warning('No results found in Pinecone, using fallback data');
+                    $vectorDBResponse = $this->getMockData();
+                }
+            } catch (\Exception $e) {
+                Log::error('Pinecone query failed, using fallback data:', ['error' => $e->getMessage()]);
+                $vectorDBResponse = $this->getMockData();
             }
 
             // --- STEP 3: Build prompt and call Gemini API ---
@@ -143,5 +143,20 @@ class GoverknowerController extends Controller
                 'details' => $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get mock data for fallback when Pinecone is unavailable
+     *
+     * @return string
+     */
+    private function getMockData(): string
+    {
+        $vectorDBResults = [
+            "Senator Jane Doe (D-CA) voted YES on the 'Clean Air Act of 2024' (Bill H.R. 1234).",
+            "Senator John Smith (R-TX) was ABSENT for the vote on Bill H.R. 1234.",
+            "The 'Clean Air Act of 2024' aims to reduce carbon emissions by 20% over 5 years."
+        ];
+        return implode("\n", $vectorDBResults);
     }
 }
