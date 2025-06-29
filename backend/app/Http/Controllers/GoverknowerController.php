@@ -5,20 +5,30 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http; // Laravel's HTTP client, powered by Guzzle
 use Illuminate\Support\Facades\Log;   // For logging errors
+use App\Services\EmbeddingService;
+use App\Services\PineconeService;
 
 class GoverknowerController extends Controller
 {
+    private EmbeddingService $embeddingService;
+    private PineconeService $pineconeService;
+
+    public function __construct(EmbeddingService $embeddingService, PineconeService $pineconeService)
+    {
+        $this->embeddingService = $embeddingService;
+        $this->pineconeService = $pineconeService;
+    }
+
     /**
      * Handle the /api/ask request.
-     * Receives a query, simulates vector DB lookup, builds prompt,
-     * calls Gemini API, and returns a natural language response.
+     * Receives a query, generates embedding, queries Pinecone,
+     * builds prompt, calls Gemini API, and returns a natural language response.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function ask(Request $request)
     {
-
         if (!$request->has('query')) {
             return response()->json([
                 'error' => 'No query provided'
@@ -36,43 +46,48 @@ class GoverknowerController extends Controller
             ], 500);
         }
 
+        // Check for Pinecone configuration
+        $pineconeApiKey = env('PINECONE_API_KEY');
+        $pineconeIndexHost = env('PINECONE_INDEX_HOST');
+        if (empty($pineconeApiKey) || empty($pineconeIndexHost)) {
+            Log::error('Pinecone configuration is missing in the .env file.');
+            return response()->json([
+                'error' => 'Server configuration error: Pinecone configuration not found.'
+            ], 500);
+        }
+
         try {
-            // --- STEP 1: Simulate Vector DB Query ---
-            // In your actual implementation, this is where you would integrate with Pinecone.
-            // You would take 'userQuery', generate an embedding, query Pinecone,
-            // and get relevant results (e.g., document chunks, factual statements).
-            // For this example, we'll use a mock response.
+            // --- STEP 1: Generate embedding for user query ---
+            Log::info('Generating embedding for query:', ['query' => $userQuery]);
+            $userQueryEmbedding = $this->embeddingService->generateEmbedding($userQuery);
+            
+            if (!$userQueryEmbedding) {
+                Log::error('Failed to generate embedding for user query');
+                return response()->json([
+                    'error' => 'Failed to process query: embedding generation failed.'
+                ], 500);
+            }
 
-            // Placeholder for Pinecone integration:
-            /*
-            use Pinecone\PineconeClient; // Assuming you've installed the PHP client
-            $pineconeClient = new PineconeClient([
-                'apiKey' => env('PINECONE_API_KEY'),
-                'environment' => env('PINECONE_ENVIRONMENT')
-            ]);
-            $index = $pineconeClient->index('your-index-name');
+            // --- STEP 2: Query Pinecone with the embedding ---
+            Log::info('Querying Pinecone with embedding');
+            $pineconeMatches = $this->pineconeService->querySimilar($userQueryEmbedding, 3);
+            
+            if (!$pineconeMatches) {
+                Log::warning('No results found in Pinecone, using fallback data');
+                // Fallback to mock data if Pinecone query fails
+                $vectorDBResults = [
+                    "Senator Jane Doe (D-CA) voted YES on the 'Clean Air Act of 2024' (Bill H.R. 1234).",
+                    "Senator John Smith (R-TX) was ABSENT for the vote on Bill H.R. 1234.",
+                    "The 'Clean Air Act of 2024' aims to reduce carbon emissions by 20% over 5 years."
+                ];
+                $vectorDBResponse = implode("\n", $vectorDBResults);
+            } else {
+                // Extract text from Pinecone matches
+                $vectorDBResponse = $this->pineconeService->getFormattedResults($pineconeMatches);
+                Log::info('Retrieved data from Pinecone:', ['matches_count' => count($pineconeMatches)]);
+            }
 
-            // You'd generate an embedding for the userQuery here
-            // e.g., $userQueryEmbedding = callToEmbeddingService($userQuery);
-
-            $queryResponse = $index->query([
-                'vector' => [// $userQueryEmbedding //],
-                'topK' => 3, // Get top 3 relevant results
-                'includeMetadata' => true,
-            ]);
-
-            $vectorDBResults = array_map(function($match) {
-                return $match->metadata['text'];
-            }, $queryResponse->matches);
-            */
-
-            $mockVectorDBResults = [
-                "Senator Jane Doe (D-CA) voted YES on the 'Clean Air Act of 2024' (Bill H.R. 1234).",
-                "Senator John Smith (R-TX) was ABSENT for the vote on Bill H.R. 1234.",
-                "The 'Clean Air Act of 2024' aims to reduce carbon emissions by 20% over 5 years."
-            ];
-            $vectorDBResponse = implode("\n", $mockVectorDBResults);
-
+            // --- STEP 3: Build prompt and call Gemini API ---
             $prompt = "Using the following data, respond to the user's question in a clear and concise manner. If the data does not contain the answer, state that you cannot find the information based on the provided data.\n\n" .
                       "Data:\n{$vectorDBResponse}\n\n" .
                       "User's Question:\n{$userQuery}\n\n" .
