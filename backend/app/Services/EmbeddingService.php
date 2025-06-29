@@ -13,11 +13,11 @@ class EmbeddingService
     public function __construct()
     {
         $this->apiKey = env('GEMINI_API_KEY');
-        $this->endpoint = "https://generativelanguage.googleapis.com/v1beta/models/embedding-001:embedContent?key={$this->apiKey}";
+        $this->endpoint = "https://generativelanguage.googleapis.com/v1beta/models/llama-text-embed-v2:embedContent?key={$this->apiKey}";
     }
 
     /**
-     * Generate embeddings for the given text using Gemini's embedding model
+     * Generate embeddings for the given text using Llama text embedding model
      *
      * @param string $text
      * @return array|null
@@ -26,7 +26,7 @@ class EmbeddingService
     {
         try {
             $payload = [
-                'model' => 'models/embedding-001',
+                'model' => 'models/llama-text-embed-v2',
                 'content' => [
                     'parts' => [
                         ['text' => $text]
@@ -37,7 +37,7 @@ class EmbeddingService
             $response = Http::post($this->endpoint, $payload);
 
             if ($response->failed()) {
-                Log::error('Gemini embedding API call failed:', [
+                Log::error('Llama embedding API call failed:', [
                     'status' => $response->status(),
                     'response' => $response->body()
                 ]);
