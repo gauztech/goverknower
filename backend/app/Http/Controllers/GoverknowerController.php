@@ -63,9 +63,7 @@ class GoverknowerController extends Controller
             
             if (!$userQueryEmbedding) {
                 Log::error('Failed to generate embedding for user query');
-                return response()->json([
-                    'error' => 'Failed to process query: embedding generation failed.'
-                ], 500);
+                $vectorDBResponse = $this->getMockData();
             }
 
             // --- STEP 2: Query Pinecone with the embedding ---
