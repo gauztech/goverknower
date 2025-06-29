@@ -81,6 +81,7 @@ class PineconeService
     public function getFormattedResults(array $matches): string
     {
         $texts = $this->extractTextFromMatches($matches);
+        Log::info('Extracted texts from Pinecone matches:', $texts);
         return implode("\n", $texts);
     }
 } 
