@@ -1,0 +1,34 @@
+<div
+    class="m-3 preview bg-base-100 items-center justiy-center bg-cover overflow-y-auto"
+>
+    <div>
+        @for (msg of messages; track msg) {
+            @if (msg.sender == "user") {
+                <div class="chat chat-end">
+                    <div class="chat-image avatar">
+                        <div class="w-15 rounded-full">
+                            <img
+                                alt="human"
+                                src="assets/images/uncle-sam.png"
+                            />
+                        </div>
+                    </div>
+                    <div class="chat-bubble chat-bubble-neutral">
+                        {{ msg.text }}
+                    </div>
+                </div>
+            } @else {
+                <div class="chat chat-start">
+                    <div class="chat-image avatar">
+                        <div class="w-15 rounded-full">
+                            <img alt="ai" src="assets/images/robot.png" />
+                        </div>
+                    </div>
+                    <div class="chat-bubble chat-bubble-primary">
+                        {{ msg.text }}
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
