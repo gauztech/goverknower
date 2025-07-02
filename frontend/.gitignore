@@ -36,8 +36,11 @@ yarn-error.log
 /libpeerconnection.log
 testem.log
 /typings
-./src/environment/
+/src/environment/
 
 # System files
 .DS_Store
 Thumbs.db
+
+# AI Assistant
+.ai-assistant/
