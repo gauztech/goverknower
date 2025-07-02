@@ -5,7 +5,7 @@ import { BackendAPIService } from './backend-api.service';
 
 @Injectable({
     providedIn: 'root',
-    useClass: BackendAPIService,
+    useClass: GeminiAPIService,
 })
 export abstract class GoverknowerAPIService {
     public abstract sendMessage(message: string): Observable<string> | null;
